@@ -544,9 +544,6 @@
   (gr_text "FAN CONTROLLER V1.0\nIAN OROURKE\n" (at 78.74 71.12) (layer "F.SilkS") (tstamp 5a717402-b680-4b0b-addd-f4a90ce83bf4)
     (effects (font (size 1 1) (thickness 0.15)) (justify left bottom))
   )
-  (gr_text "TODO: Bodge/Voltage Dividers?" (at 132.08 58.42) (layer "F.SilkS") (tstamp 6d4017ff-d808-45e6-ad32-73c17c99052e)
-    (effects (font (size 1 1) (thickness 0.15)) (justify left bottom))
-  )
 
   (segment (start 137.16 63.5) (end 129.54 63.5) (width 0.25) (layer "F.Cu") (net 1) (tstamp 7bcda66c-2268-4401-8214-9c03a3daa6ca))
   (segment (start 152.4 66.04) (end 152.4 88.9) (width 0.25) (layer "F.Cu") (net 2) (tstamp 8db3973a-9226-40eb-a2a4-5dd66f62d471))
