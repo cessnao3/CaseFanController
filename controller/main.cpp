@@ -31,8 +31,8 @@ int main()
     gpio_put(PIN_MOTOR_STANDBY, 1);
 
     // Create the motor controller
-    FanController controller_a(PIN_MOTOR_1_A, PIN_MOTOR_1_B, PIN_MOTOR_1_PWM);
-    FanController controller_b(PIN_MOTOR_2_A, PIN_MOTOR_2_B, PIN_MOTOR_2_PWM);
+    MotorController controller_a(PIN_MOTOR_1_A, PIN_MOTOR_1_B, PIN_MOTOR_1_PWM);
+    MotorController controller_b(PIN_MOTOR_2_A, PIN_MOTOR_2_B, PIN_MOTOR_2_PWM, &controller_a);
 
     // Main Loop
     while (1)

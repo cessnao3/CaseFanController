@@ -1,6 +1,6 @@
 #pragma once
 
-class FanController
+class MotorController
 {
     const int pin_a;
     const int pin_b;
@@ -13,7 +13,7 @@ class FanController
     static const int MAX_SPEED = PWM_WRAP - 1;
 
 public:
-    FanController(const int pin_a, const int pin_b, const int pin_pwm);
+    MotorController(const int pin_a, const int pin_b, const int pin_pwm, MotorController* linked_controller = nullptr);
 
     void set_speed(int new_speed, bool force = false);
 
