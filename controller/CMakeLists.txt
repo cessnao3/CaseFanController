@@ -27,7 +27,10 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(controller controller.cpp )
+add_executable(controller
+  main.cpp
+  controller.hpp controller.cpp
+  lookup.hpp lookup.cpp)
 
 pico_set_program_name(controller "controller")
 pico_set_program_version(controller "0.1")
