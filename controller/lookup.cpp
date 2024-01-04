@@ -1,24 +1,23 @@
 #include "lookup.hpp"
 
-LookupTable::LookupTable(std::initializer_list<std::pair<int, int>> init)
+LookupTable::LookupTable(std::initializer_list<std::pair<float, int>> init)
 {
     for (const auto &[x, y] : init)
     {
-        vals.push_back({x, y});
+        add_speed(x, y);
     }
 }
 
-void LookupTable::add_speed(const int pwm, const int speed)
+void LookupTable::add_speed(const float pwm, const int speed)
 {
-    size_t add_index = 0;
-
-    for (size_t i = 0; i < vals.size(); ++i)
+    size_t add_index;
+    for (add_index = 0; add_index < vals.size(); ++add_index)
     {
-        const auto current = vals[i].first;
+        const auto current = vals[add_index].first;
 
         if (pwm == current)
         {
-            vals[i].second = speed;
+            vals[add_index].second = speed;
             return;
         }
         else if (pwm < current)

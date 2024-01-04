@@ -26,7 +26,7 @@ MotorController::MotorController(const int pin_a, const int pin_b, const int pin
 
         // TargetFreq = SystemClock / ClockDivide / PwmRange
         // ClockDivide = SystemClock / TargetFreq / PwmRange
-        const float clock_divide = (float)clock_get_hz(clk_sys) / (500.0f) / (float)PWM_WRAP;
+        const float clock_divide = (float)clock_get_hz(clk_sys) / (16000.0f) / (float)PWM_WRAP;
         pwm_set_clkdiv(slice, clock_divide);
     }
 

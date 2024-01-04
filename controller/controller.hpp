@@ -10,6 +10,8 @@ class MotorController
     bool reversed = false;
 
     static const int PWM_WRAP = 1024;
+
+public:
     static const int MAX_SPEED = PWM_WRAP - 1;
 
 public:

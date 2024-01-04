@@ -5,12 +5,12 @@
 
 class LookupTable
 {
-    std::vector<std::pair<int, int>> vals;
+    std::vector<std::pair<float, int>> vals;
 
 public:
-    LookupTable(std::initializer_list<std::pair<int, int>> init);
+    LookupTable(std::initializer_list<std::pair<float, int>> init);
 
-    void add_speed(const int pwm, const int speed);
+    void add_speed(const float, const int speed);
 
     int get_speed(const int x) const;
 };
