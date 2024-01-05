@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MOTOR_CONTROLLER_HPP
+#define MOTOR_CONTROLLER_HPP
 
 class MotorController
 {
@@ -28,3 +29,5 @@ public:
 private:
     static int sign(int val);
 };
+
+#endif

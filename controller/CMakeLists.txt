@@ -29,8 +29,7 @@ pico_sdk_init()
 
 add_executable(controller
   main.cpp
-  controller.hpp controller.cpp
-  lookup.hpp lookup.cpp)
+  controller.hpp controller.cpp)
 
 pico_set_program_name(controller "controller")
 pico_set_program_version(controller "0.1")

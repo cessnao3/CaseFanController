@@ -4,9 +4,6 @@
 #include "hardware/watchdog.h"
 #include "hardware/clocks.h"
 
-#include <atomic>
-
-#include "lookup.hpp"
 #include "controller.hpp"
 
 #include "hardware/pwm.h"
@@ -65,7 +62,7 @@ int main()
     // Init the pico
     stdio_init_all();
 
-    // initialise GPIO (Green LED connected to pin 25)
+    // initialize GPIO (Green LED connected to pin 25)
     gpio_init(PIN_LED);
     gpio_set_dir(PIN_LED, GPIO_OUT);
 
@@ -82,33 +79,30 @@ int main()
     MotorController controller_a(PIN_MOTOR_1_A, PIN_MOTOR_1_B, PIN_MOTOR_1_PWM);
     MotorController controller_b(PIN_MOTOR_2_A, PIN_MOTOR_2_B, PIN_MOTOR_2_PWM, &controller_a);
 
-    // gpio_set_irq_enabled_with_callback(PIN_MB_PWM_IN, GPIO_IRQ_EDGE_FALL | GPIO_IRQ_EDGE_RISE, true, pulse_width_callback);
-
-    const LookupTable lookup({
-        {0.00f, static_cast<int>(MotorController::MAX_SPEED * 0.3f)},
-        {0.30f, static_cast<int>(MotorController::MAX_SPEED * 0.3f)},
-        {0.40f, static_cast<int>(MotorController::MAX_SPEED * 0.4f)},
-        {0.50f, static_cast<int>(MotorController::MAX_SPEED * 0.6f)},
-        {0.60f, static_cast<int>(MotorController::MAX_SPEED * 0.8f)},
-        {0.70f, static_cast<int>(MotorController::MAX_SPEED * 1.0f)},
-    });
-
-    bool led_setting = true;
-
     // Main Loop
+    bool led_setting = true;
     while (1)
     {
         gpio_put(PIN_LED, led_setting);
-        sleep_ms(500);
+        sleep_ms(50);
         led_setting = !led_setting;
 
-        const auto dc = measure_duty_cycle(PIN_MB_PWM_IN);
-        const auto new_speed = lookup.get_speed(dc);
+        const float duty_cycle = measure_duty_cycle(PIN_MB_PWM_IN);
+        int new_speed = static_cast<int>(MotorController::MAX_SPEED * duty_cycle);
+
+        if (new_speed > MotorController::MAX_SPEED)
+        {
+            new_speed = MotorController::MAX_SPEED;
+        }
+        else if (new_speed < 0.1f * MotorController::MAX_SPEED)
+        {
+            new_speed = 0;
+        }
 
         controller_a.set_speed(new_speed);
         controller_b.set_speed(new_speed);
 
-        printf("Duty-Cycle: %.2f - %d\n", dc, new_speed);
+        printf("DC: %.2f - %d\n", duty_cycle, new_speed);
     }
 
     // Return result
