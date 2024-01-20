@@ -57,6 +57,23 @@ uint64_t read_pulse_width(const uint gpio)
     return time_us_64() - t_init;
 }
 
+template <typename T>
+T ctl_clamp(const T val, const T lower_bound, const T upper_bound)
+{
+    if (val > upper_bound)
+    {
+        return upper_bound;
+    }
+    else if (val < lower_bound)
+    {
+        return lower_bound;
+    }
+    else
+    {
+        return val;
+    }
+}
+
 int main()
 {
     // Init the pico
@@ -81,28 +98,44 @@ int main()
 
     // Main Loop
     bool led_setting = true;
+    int print_interval = 0;
+
+    int speed_command = 0;
+    int rate_limited_command = 0;
+
+    const int SPEED_LIMIT = 50;
+    const int SLEEP_MS = 50;
+    const int RATE_HZ = 1000 / SLEEP_MS;
+
     while (1)
     {
         gpio_put(PIN_LED, led_setting);
-        sleep_ms(50);
+        sleep_ms(SLEEP_MS);
         led_setting = !led_setting;
 
         const float duty_cycle = measure_duty_cycle(PIN_MB_PWM_IN);
-        int new_speed = static_cast<int>(MotorController::MAX_SPEED * duty_cycle);
+        speed_command = ctl_clamp(
+            static_cast<int>(MotorController::MAX_SPEED * duty_cycle),
+            0,
+            MotorController::MAX_SPEED);
 
-        if (new_speed > MotorController::MAX_SPEED)
+        const int speed_delta = ctl_clamp(speed_command - rate_limited_command, -SPEED_LIMIT, SPEED_LIMIT);
+        rate_limited_command += speed_delta;
+
+        int used_speed = rate_limited_command;
+
+        if (used_speed < 0.1f * MotorController::MAX_SPEED)
         {
-            new_speed = MotorController::MAX_SPEED;
+            used_speed = 0;
         }
-        else if (new_speed < 0.1f * MotorController::MAX_SPEED)
+
+        controller_a.set_speed(used_speed);
+        controller_b.set_speed(used_speed);
+
+        if ((++print_interval) % RATE_HZ == 0)
         {
-            new_speed = 0;
+            printf("DC: %.2f - %d (CMD %d, Rate Limited %d)\n", duty_cycle, used_speed, speed_command, rate_limited_command);
         }
-
-        controller_a.set_speed(new_speed);
-        controller_b.set_speed(new_speed);
-
-        printf("DC: %.2f - %d\n", duty_cycle, new_speed);
     }
 
     // Return result
